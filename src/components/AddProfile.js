@@ -20,7 +20,8 @@ class AddProfile extends React.Component {
         status: "",
         redirect:false,
         displayNotification: false,
-        memberId: sessionStorage.getItem("memberId")
+        memberId: sessionStorage.getItem("memberId"),
+        disabledRefferedBy: false
     };
 
     componentDidMount() {
@@ -38,10 +39,11 @@ class AddProfile extends React.Component {
             e.stopPropagation();
             const profile = JSON.stringify(this.state)
             this.props.createProfile(profile);
+            this.setState({displayNotification : true});
         }
-
         this.setState({validated: true});
-        this.setState({displayNotification : true});
+
+       
     };
 
     renderRedirect = () => {
@@ -188,7 +190,9 @@ class AddProfile extends React.Component {
                                                     label="Yes"
                                                     type="radio"
                                                     name={`isReferral`}
-                                                    onChange={e => this.setState({referred: true})}
+                                                    onChange={e => {this.setState({referred: true});
+                                                        this.setState({disabledRefferedBy:false});
+                                                    }}
                                                 />
                                                 <Form.Check
                                                     inline
@@ -196,7 +200,10 @@ class AddProfile extends React.Component {
                                                     label="No"
                                                     type="radio"
                                                     name={`isReferral`}
-                                                    onChange={e => this.setState({referred: false})}
+                                                    onChange={e => {this.setState({referred: false});
+                                                        this.setState({referredBy:null});        
+                                                        this.setState({disabledRefferedBy:true});
+                                                    }}
                                                 />
                                             </Col>
                                         </Form.Group>
@@ -208,9 +215,10 @@ class AddProfile extends React.Component {
                                             </Form.Label>
                                             <Col sm="10">
                                                 <Form.Control
-                                                    required
+                                                    required = {(this.state.disabledRefferedBy)? "true" : "false"}
                                                     type="text"
                                                     placeholder="Enter Name"
+                                                    disabled = {(this.state.disabledRefferedBy)? "disabled" : ""}
                                                     onChange={e =>
                                                         this.setState({referredBy: e.target.value})
                                                     }

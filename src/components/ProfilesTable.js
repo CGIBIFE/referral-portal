@@ -446,8 +446,24 @@ class CustomTable extends React.Component {
             </Modal.Header>
             <Modal.Body>
               <Row>
+                <Col sm="9">
+                  <h5>Edit Candidate</h5></Col>
+                <Col sm="3">
+                  <a
+                    href="javascript:void(0)"
+                    onClick={() =>
+                      this.setState({
+                        editProfile: false,
+                        addComment: true
+                      })
+                    }
+                  >
+                    <Button>Add comment</Button>
+                  </a>
+                </Col>
+              </Row>
+              <Row>
                 <Col>
-                  <h5>Edit Candidate</h5>
                   <Form
                     noValidate
                     validated={this.state.validated}
@@ -555,15 +571,17 @@ class CustomTable extends React.Component {
                               inline
                               label="Yes"
                               type="radio"
-                              name={`isReferral`}
-                              onChange={e => this.setState({ referred: true })}
+                              name={`inNL`}
+                              defaultChecked={inNL?true:false}
+                              onChange={e => this.setState({ inNL: true })}
                             />
                             <Form.Check
                               inline
                               label="No"
                               type="radio"
-                              name={`isReferral`}
-                              onChange={e => this.setState({ referred: false })}
+                              name={`inNL`}
+                              defaultChecked={inNL?false:true}
+                              onChange={e => this.setState({ inNL: false })}
                             />
                           </td>
                         </tr>
@@ -575,25 +593,33 @@ class CustomTable extends React.Component {
                               label="Yes"
                               type="radio"
                               name={`isReferral`}
-                              onChange={e => this.setState({ referred: true })}
+                              defaultChecked={referred?true:false}
+                              onChange={e => {this.setState({ referred: true })
+                                this.setState({disabledRefferedBy:false});
+                              }}
                             />
                             <Form.Check
                               inline
                               label="No"
                               type="radio"
                               name={`isReferral`}
-                              onChange={e => this.setState({ referred: false })}
+                              defaultChecked={referred?false:true}
+                              onChange={e => {this.setState({ referred: false })
+                                this.setState({referredBy:null});        
+                                this.setState({disabledRefferedBy:true});
+                              }}
                             />
                           </td>
                         </tr>
                         <tr>
                           <td>Referred by</td>
                           <td>
-                            <Form.Group controlId="profileStatus" as={Row}>
+                            <Form.Group controlId="referredBy" as={Row}>
                               <Form.Control
-                                required
+                                required = {(this.state.disabledRefferedBy)? "true" : "false"}
                                 type="text"
                                 defaultValue={referredBy}
+                                disabled = {(this.state.disabledRefferedBy)? "disabled" : ""}
                                 onChange={e =>
                                   this.setState({ referredBy: e.target.value })
                                 }
@@ -664,7 +690,6 @@ class CustomTable extends React.Component {
                         )}
                       </tbody>
                     </Table>
-
                     <Row>
                       <Col sm="9" />
                       <Col sm="3">
@@ -674,6 +699,7 @@ class CustomTable extends React.Component {
                   </Form>
                 </Col>
               </Row>
+
             </Modal.Body>
           </Modal>
         )}
